@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 if [[ "${EUID:-}" -ne 0 ]]; then
-  echo "Run as root: sudo $0" >&2
+  echo "Запустите от root: sudo $0" >&2
   exit 1
 fi
 
@@ -14,7 +14,7 @@ install -m 0755 "${ROOT}"/scripts/mobile443-*.sh /usr/local/sbin/
 
 if [[ ! -f /opt/mobile443/config.conf ]]; then
   install -m 0600 "${ROOT}/config.conf.example" /opt/mobile443/config.conf
-  echo "Created /opt/mobile443/config.conf — edit before use."
+  echo "Создан /opt/mobile443/config.conf — отредактируйте перед использованием."
 fi
 
 if [[ ! -f /opt/mobile443/asns.conf ]]; then
@@ -29,7 +29,7 @@ if [[ ! -f /etc/sysctl.d/99-mobile443.conf ]]; then
   sysctl -p /etc/sysctl.d/99-mobile443.conf
 fi
 
-echo "Installed. Configure /opt/mobile443/config.conf then:"
+echo "Установка завершена. Настройте /opt/mobile443/config.conf, затем:"
 echo "  systemctl enable --now mobile443-apply.service mobile443-monitor.service"
 echo "  systemctl enable --now mobile443-update.timer mobile443-stats.timer"
 echo "  systemctl start mobile443-update.service"

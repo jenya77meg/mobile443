@@ -1,26 +1,26 @@
 # mobile443
 
-Firewall and monitoring stack for Remnawave/Xray nodes that expose LTE/mobile-only endpoints on ports **443** and **8443**.
+Файрвол и мониторинг для нод Remnawave/Xray с LTE/мобильными входами на портах **443** и **8443**.
 
-Non-mobile clients (home Wi‑Fi, fixed broadband) are detected via ASN allowlists, optionally blocked with iptables, and notified in Telegram. Integrates with Remnawave API for per-user `telegramId`.
+Клиенты не с мобильного интернета (домашний Wi‑Fi, проводной канал) определяются по ASN allowlist, при необходимости блокируются через iptables и получают уведомление в Telegram. Есть интеграция с API Remnawave для `telegramId` пользователя.
 
-## Features
+## Возможности
 
-- **Mobile ASN allowlist** — prefixes fetched from RIPEstat for ASNs listed in `asns.conf`
-- **Traffic Guard** — government and antiscanner blocklists (ipset + iptables precheck)
-- **Deferred block** — temporary drop after Telegram notification (configurable delay)
-- **Volume threshold** — `MOBILE443_MIN_NOTIFY_BYTES` delays log/notify until a connection exceeds N bytes (reduces false positives from health checks)
-- **Health-check filter** — skips notifications for probe-like Xray access log lines
-- **Telegram** — user notifications and daily admin stats
+- **Allowlist мобильных ASN** — префиксы подтягиваются из RIPEstat по ASN из `asns.conf`
+- **Traffic Guard** — списки government и antiscanner (ipset + iptables precheck)
+- **Отложенная блокировка** — временный DROP после уведомления в Telegram (задержка настраивается)
+- **Порог по трафику** — `MOBILE443_MIN_NOTIFY_BYTES` откладывает лог/уведомление, пока одно соединение не превысит N байт (меньше ложных срабатываний от health check)
+- **Фильтр health check** — не шлёт уведомления по «пробным» строкам access.log Xray
+- **Telegram** — уведомления пользователям и ежедневная статистика админу
 
-## Requirements
+## Требования
 
-- Linux with `iptables`, `ipset`, `curl`, `jq`, `flock`
-- Root for install
-- Remnawave node with access log at path configured in `config.conf`
-- Optional: Remnawave Panel API token for resolving users
+- Linux: `iptables`, `ipset`, `curl`, `jq`, `flock`
+- Установка от root
+- Нода Remnawave с access.log по пути из `config.conf`
+- По желанию: API-токен панели Remnawave для поиска пользователей
 
-## Quick install
+## Быстрая установка
 
 ```bash
 git clone https://github.com/jenya77meg/mobile443.git
@@ -31,44 +31,44 @@ sudo nano /opt/mobile443/config.conf
 sudo cp examples/asns.conf.example /opt/mobile443/asns.conf
 sudo systemctl enable --now mobile443-apply.service mobile443-monitor.service
 sudo systemctl enable --now mobile443-update.timer mobile443-stats.timer
-sudo mobile443-update.sh   # or: systemctl start mobile443-update.service
+sudo mobile443-update.sh   # или: systemctl start mobile443-update.service
 ```
 
-## Layout on server
+## Структура на сервере
 
-| Path | Purpose |
-|------|---------|
-| `/opt/mobile443/config.conf` | Secrets and toggles (not in git) |
-| `/opt/mobile443/asns.conf` | Allowed mobile ASNs |
-| `/opt/mobile443/lists/` | Downloaded blocklists |
-| `/var/lib/mobile443/` | Runtime state, caches, notify cooldown |
-| `/usr/local/sbin/mobile443-*.sh` | Scripts |
+| Путь | Назначение |
+|------|------------|
+| `/opt/mobile443/config.conf` | Секреты и переключатели (не в git) |
+| `/opt/mobile443/asns.conf` | Разрешённые мобильные ASN |
+| `/opt/mobile443/lists/` | Скачанные blocklist |
+| `/var/lib/mobile443/` | Состояние, кэши, cooldown уведомлений |
+| `/usr/local/sbin/mobile443-*.sh` | Скрипты |
 
-## Configuration
+## Настройка
 
-See [`config.conf.example`](config.conf.example). Required for Telegram + Remnawave user lookup:
+См. [`config.conf.example`](config.conf.example). Для Telegram и поиска пользователей в Remnawave нужны:
 
 - `TG_BOT_TOKEN`, `TG_ADMIN_ID`
 - `REMNAWAVE_API_URL`, `REMNAWAVE_API_TOKEN`
 - `XRAY_ACCESS_LOG`
 
-Enable connection byte accounting for the volume threshold:
+Для порога по объёму трафика включите учёт байт соединений:
 
 ```bash
 sudo sysctl -w net.netfilter.nf_conntrack_acct=1
 echo 'net.netfilter.nf_conntrack_acct = 1' | sudo tee /etc/sysctl.d/99-mobile443.conf
 ```
 
-## Services
+## Сервисы systemd
 
-| Unit | Role |
-|------|------|
-| `mobile443-apply.service` | Apply ipset/iptables from cache |
-| `mobile443-monitor.service` | Tail kernel log / notify users |
-| `mobile443-update.service` | Refresh allowlists and lists |
-| `mobile443-update.timer` | Daily 00:00 UTC |
-| `mobile443-stats.timer` | Daily stats 09:00 UTC |
+| Unit | Назначение |
+|------|------------|
+| `mobile443-apply.service` | Применить ipset/iptables из кэша |
+| `mobile443-monitor.service` | Следить за логом ядра / уведомлять пользователей |
+| `mobile443-update.service` | Обновить allowlist и списки |
+| `mobile443-update.timer` | Ежедневно в 00:00 UTC |
+| `mobile443-stats.timer` | Статистика админу в 09:00 UTC |
 
-## License
+## Лицензия
 
-MIT — see [LICENSE](LICENSE).
+MIT — см. [LICENSE](LICENSE).
