@@ -1,0 +1,15 @@
+[Unit]
+Description=Monitor blocked connections and send Telegram notifications
+After=network-online.target mobile443-apply.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/mobile443-monitor.sh
+User=root
+Group=root
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

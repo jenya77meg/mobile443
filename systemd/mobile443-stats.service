@@ -1,0 +1,10 @@
+[Unit]
+Description=Send daily mobile443 stats to Telegram admin
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/mobile443-stats.sh
+User=root
+Group=root

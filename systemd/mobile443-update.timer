@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily refresh of mobile443 data at 00:00 UTC
+
+[Timer]
+OnCalendar=*-*-* 00:00:00
+Persistent=true
+Unit=mobile443-update.service
+
+[Install]
+WantedBy=timers.target
