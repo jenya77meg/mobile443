@@ -23,7 +23,7 @@ Non-mobile clients (home Wi‑Fi, fixed broadband) are detected via ASN allowlis
 ## Quick install
 
 ```bash
-git clone https://github.com/YOUR_USER/mobile443.git
+git clone https://github.com/jenya77meg/mobile443.git
 cd mobile443
 sudo ./install.sh
 sudo cp config.conf.example /opt/mobile443/config.conf
