@@ -16,6 +16,9 @@ TG_ADMIN_ID="YOUR_TELEGRAM_ADMIN_CHAT_ID"
 
 XRAY_ACCESS_LOG="/var/log/remnanode/access.log"
 
+# Для TCP-моста без локального Xray: сразу назначать бан, без поиска пользователя в access.log/API.
+RELAY_MODE="false"
+
 REMNAWAVE_API_URL="https://panel.example.com"
 REMNAWAVE_API_TOKEN="YOUR_REMNAWAVE_API_TOKEN"
 TG_ID_SOURCE="telegramId"

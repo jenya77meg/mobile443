@@ -17,7 +17,7 @@
 
 - Linux: `iptables`, `ipset`, `curl`, `jq`, `flock`
 - Установка от root
-- Нода Remnawave с access.log по пути из `config.conf`
+- Для режима ноды: Remnawave с access.log по пути из `config.conf`; для TCP-моста используйте `RELAY_MODE`
 - По желанию: API-токен панели Remnawave для поиска пользователей
 
 ## Быстрая установка
@@ -51,6 +51,14 @@ sudo mobile443-update.sh   # или: systemctl start mobile443-update.service
 - `TG_BOT_TOKEN`, `TG_ADMIN_ID`
 - `REMNAWAVE_API_URL`, `REMNAWAVE_API_TOKEN`
 - `XRAY_ACCESS_LOG`
+
+### Режим TCP-моста
+
+На HAProxy/TCP-мосте без локального Xray установите `RELAY_MODE="true"` в `/opt/mobile443/config.conf`. При включённом отложенном режиме (`ENABLE_TELEGRAM="true"`) события превышения порога сразу передаются на назначение бана с задержкой `DEFERRED_BLOCK_DELAY`.
+
+Поиск пользователя в локальном `access.log`, обращения к API Remnawave и пользовательские уведомления в этом режиме пропускаются. Уже заблокированные IP и уже назначенные задания проверяются до ожидания, поэтому повторные события не создают дополнительные баны. Traffic Guard и его административные уведомления продолжают работать.
+
+По умолчанию `RELAY_MODE="false"`: обработка ноды с локальным Xray сохраняется. После изменения настройки перезапустите `mobile443-monitor.service`.
 
 Для порога по объёму трафика включите учёт байт соединений:
 

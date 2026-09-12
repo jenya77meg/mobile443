@@ -195,6 +195,12 @@ process_blocked() {
 
   [[ "${ENABLE_TELEGRAM:-false}" == "true" ]] || return
 
+  # A relay has no local Xray user log; schedule directly and deduplicate there.
+  if bool_is_true "${RELAY_MODE:-false}"; then
+    schedule_deferred_block "$src_ip"
+    return
+  fi
+
   # Wait for the IP to appear in xray access.log (connection is allowed through first)
   xray_line=$(find_xray_line_by_ip_with_retry "$src_ip")
   email=$(extract_email_from_xray_line "$xray_line")
