@@ -22,6 +22,12 @@
 
 ## Быстрая установка
 
+Нужна только блокировка сетей из Traffic Guard, без ограничений мобильного/Wi-Fi доступа? Используйте **[быстрый старт «Только Traffic Guard»](docs/traffic-guard-only.md)** и [готовый конфиг](examples/config.traffic-guard-only.conf). Инструкция подходит для ноды с VPN/сайтом на порту 443, включая WA, и содержит источники двух активных блоклистов, проверку правил и переход с полного mobile443.
+
+В этом режиме `ENABLE_MOBILE_ALLOW="false"`; включены `ENABLE_TRAF_GUARD`, `ENABLE_TRAF_GUARD_GOVERNMENT` и `ENABLE_TRAF_GUARD_ANTISCANNER`. Монитор и Telegram для блокировки не требуются.
+
+Ниже — установка полного режима с мобильным allowlist и уведомлениями.
+
 ```bash
 git clone https://github.com/jenya77meg/mobile443.git
 cd mobile443
